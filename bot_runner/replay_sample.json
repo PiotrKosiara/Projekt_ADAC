@@ -1,0 +1,12 @@
+﻿[
+  { "x": 112, "y": 146, "delay_ms": 18, "click": false },
+  { "x": 141, "y": 169, "delay_ms": 22, "click": false },
+  { "x": 170, "y": 191, "delay_ms": 24, "click": false },
+  { "x": 204, "y": 212, "delay_ms": 21, "click": false },
+  { "x": 238, "y": 226, "delay_ms": 27, "click": false },
+  { "x": 275, "y": 243, "delay_ms": 18, "click": true },
+  { "x": 311, "y": 259, "delay_ms": 26, "click": false },
+  { "x": 356, "y": 284, "delay_ms": 19, "click": false },
+  { "x": 397, "y": 302, "delay_ms": 17, "click": false },
+  { "x": 443, "y": 318, "delay_ms": 20, "click": true }
+]

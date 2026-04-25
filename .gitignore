@@ -1,0 +1,10 @@
+﻿.env
+__pycache__/
+*.pyc
+.pytest_cache/
+backend/models_artifacts/*.joblib
+backend/models_artifacts/reports/
+backend/data/raw/*.jsonl
+frontend/node_modules/
+frontend/dist/
+bot_runner/.pytest_cache/
