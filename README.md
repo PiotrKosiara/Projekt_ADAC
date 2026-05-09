@@ -96,6 +96,23 @@ docker compose exec bot_runner python main.py --scenario human_like --sessions 1
 docker compose exec bot_runner python main.py --scenario replay --sessions 5 --replay-file replay_sample.json
 ```
 
+7a. Wizualizacja ruchu botów:
+
+```bash
+# Nagrywanie MP4 każdej sesji (działa w Dockerze)
+docker compose exec bot_runner python main.py --scenario human_like --sessions 3 --record-video
+
+# Pliki video pojawią się lokalnie w:
+bot_runner/artifacts/videos
+
+# W nagraniach kursor jest automatycznie wizualizowany (overlay).
+# Możesz też wymusić overlay bez nagrywania:
+# docker compose exec bot_runner python main.py --scenario linear --sessions 1 --show-cursor
+
+# Tryb live (okno przeglądarki) - uruchom lokalnie poza kontenerem:
+# python bot_runner/main.py --scenario human_like --sessions 1 --headed --slow-mo-ms 60 --target-url http://localhost:5173
+```
+
 8. Testy jednostkowe:
 
 ```bash

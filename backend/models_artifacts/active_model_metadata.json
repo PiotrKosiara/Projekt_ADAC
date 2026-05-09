@@ -1,0 +1,25 @@
+{
+  "version": "logistic_regression_20260509_133916",
+  "algorithm": "logistic_regression",
+  "feature_set_version": "v1",
+  "metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "roc_auc": 1.0,
+    "false_positive_rate_human": 0.0,
+    "confusion_matrix": {
+      "tn": 19,
+      "fp": 0,
+      "fn": 0,
+      "tp": 3
+    }
+  },
+  "window_size": 120,
+  "stride": 80,
+  "seen_bot_sources": [
+    "frontend_manual"
+  ],
+  "artifact_name": "model_20260509_133916.joblib",
+  "saved_at": "2026-05-09T13:39:16.999957"
+}

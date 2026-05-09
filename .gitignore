@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 backend/models_artifacts/*.joblib
+backend/models_artifacts/*.webm
 backend/models_artifacts/reports/
 backend/data/raw/*.jsonl
 frontend/node_modules/

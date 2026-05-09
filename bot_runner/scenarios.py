@@ -6,7 +6,7 @@ import random
 import time
 from pathlib import Path
 
-from playwright.sync_api import Page
+from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError
 
 
 def open_testbed(page: Page, target_url: str) -> None:
@@ -55,6 +55,9 @@ def scenario_linear(page: Page, target_url: str) -> None:
         page.mouse.wheel(0, y)
         time.sleep(0.025)
 
+    if _click_if_present(page, "#label-bot"):
+        page.wait_for_timeout(200)
+
 
 def _bezier(p0, p1, p2, p3, t):
     return (
@@ -80,6 +83,23 @@ def _move_bezier(page: Page, start: tuple[float, float], end: tuple[float, float
         time.sleep(random.uniform(0.004, 0.02))
 
 
+def _safe_bounding_box(page: Page, selector: str, timeout_ms: int = 3000):
+    try:
+        return page.locator(selector).bounding_box(timeout=timeout_ms)
+    except PlaywrightTimeoutError:
+        return None
+
+
+def _click_if_present(page: Page, selector: str, timeout_ms: int = 3000) -> bool:
+    box = _safe_bounding_box(page, selector, timeout_ms=timeout_ms)
+    if not box:
+        return False
+    target_x = box["x"] + box["width"] / 2
+    target_y = box["y"] + box["height"] / 2
+    page.mouse.click(target_x, target_y)
+    return True
+
+
 def scenario_human_like(page: Page, target_url: str) -> None:
     open_testbed(page, target_url)
 
@@ -96,8 +116,9 @@ def scenario_human_like(page: Page, target_url: str) -> None:
 
     current = (130.0, 120.0)
     for selector in selectors:
-        box = page.locator(selector).bounding_box()
+        box = _safe_bounding_box(page, selector)
         if not box:
+            print(f"[human_like] Pomijam brakujący element: {selector}")
             continue
 
         target = (
@@ -106,17 +127,23 @@ def scenario_human_like(page: Page, target_url: str) -> None:
         )
         _move_bezier(page, current, target, steps=random.randint(20, 50))
 
-        if random.random() < 0.75:
+        should_click = selector in {"#search-input", "#filter-software"} or random.random() < 0.75
+        if should_click:
             page.mouse.click(target[0], target[1])
             time.sleep(random.uniform(0.02, 0.18))
 
         if selector == "#search-input":
-            page.keyboard.type("router secure", delay=random.randint(40, 120))
+            page.keyboard.press("Control+A")
+            page.keyboard.press("Backspace")
+            page.keyboard.type("vault", delay=random.randint(40, 120))
 
         if random.random() < 0.3:
             page.mouse.wheel(0, random.randint(-250, 420))
 
         current = target
+
+    if _click_if_present(page, "#label-bot"):
+        page.wait_for_timeout(200)
 
 
 def scenario_replay(page: Page, target_url: str, replay_file: str) -> None:
@@ -138,6 +165,8 @@ def scenario_replay(page: Page, target_url: str, replay_file: str) -> None:
         page.wait_for_timeout(delay_ms)
 
     page.wait_for_timeout(700)
+    if _click_if_present(page, "#label-bot"):
+        page.wait_for_timeout(200)
 
 
 def run_named_scenario(page: Page, scenario: str, target_url: str, replay_file: str, manual_seconds: int) -> None:
