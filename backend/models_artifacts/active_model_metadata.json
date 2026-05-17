@@ -1,25 +1,26 @@
 {
-  "version": "logistic_regression_20260509_133916",
-  "algorithm": "logistic_regression",
+  "version": "decision_tree_20260515_173306",
+  "algorithm": "decision_tree",
   "feature_set_version": "v1",
   "metrics": {
-    "precision": 1.0,
-    "recall": 1.0,
-    "f1": 1.0,
-    "roc_auc": 1.0,
-    "false_positive_rate_human": 0.0,
+    "precision": 0.9821428571428571,
+    "recall": 0.9016393442622951,
+    "f1": 0.9401709401709402,
+    "roc_auc": 0.9441530054644808,
+    "false_positive_rate_human": 0.013333333333333334,
     "confusion_matrix": {
-      "tn": 19,
-      "fp": 0,
-      "fn": 0,
-      "tp": 3
+      "tn": 74,
+      "fp": 1,
+      "fn": 6,
+      "tp": 55
     }
   },
   "window_size": 120,
   "stride": 80,
+  "include_env_in_tree": false,
   "seen_bot_sources": [
     "frontend_manual"
   ],
-  "artifact_name": "model_20260509_133916.joblib",
-  "saved_at": "2026-05-09T13:39:16.999957"
+  "artifact_name": "model_20260515_173310.joblib",
+  "saved_at": "2026-05-15T17:33:10.237964"
 }

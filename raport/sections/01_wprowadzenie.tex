@@ -1,0 +1,38 @@
+\section{Wprowadzenie i motywacja}
+
+\subsection{Kontekst problemu}
+Aplikacje webowe są stale narażone na automatyczny ruch generowany przez boty:
+masowe skanowanie zasobów, testowanie endpointów, tworzenie sztucznego ruchu
+lub działania fraudowe. Klasyczne podejścia ochronne oparte wyłącznie o reguły
+sieciowe i statyczne sygnatury przestają być wystarczające, ponieważ nowoczesne
+boty potrafią imitować część zachowań użytkownika.
+
+\subsection{Dlaczego behawioralna biometria myszy}
+Trajektoria kursora, rytm kliknięć, dynamika scrollowania i przejścia focus/blur
+niosą bogatą informację o sposobie interakcji człowieka z interfejsem.
+W odróżnieniu od pojedynczego eventu, analiza krótkiego okna zachowania:
+
+\begin{itemize}
+  \item lepiej oddaje \textit{styl} interakcji,
+  \item utrudnia prostym botom przejście niezauważonym,
+  \item daje możliwość szybkiej reakcji ochronnej jeszcze w trakcie sesji.
+\end{itemize}
+
+\subsection{Cel projektu}
+Celem MVP było zbudowanie kompletnego pipeline'u \textit{end-to-end}:
+\begin{itemize}
+  \item frontend zbiera telemetrykę zachowania i fingerprint środowiska,
+  \item backend zapisuje sesje i surowe eventy,
+  \item moduł cech buduje reprezentację okien zachowania,
+  \item model klasyfikuje \texttt{human} vs \texttt{bot},
+  \item silnik polityk zwraca akcję: \texttt{allow/observe/throttle/challenge/block}.
+\end{itemize}
+
+\subsection{Zakres i świadome uproszczenia MVP}
+Wersja demonstracyjna została zaprojektowana profesjonalnie, ale celowo uproszczona:
+\begin{itemize}
+  \item inferencja modelu odbywa się w tym samym backendzie FastAPI (bez osobnego model service),
+  \item predykcja działa na poziomie sesji i krótkich okien eventów,
+  \item brak integracji z zewnętrznym WAF i blokadą IP (reakcja sesyjna),
+  \item nacisk na czytelność kodu, odtwarzalność wyników i łatwą prezentację lokalną.
+\end{itemize}

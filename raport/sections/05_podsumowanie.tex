@@ -1,0 +1,28 @@
+\section{Podsumowanie projektu}
+
+\subsection{Co zostało osiągnięte}
+W ramach MVP dostarczono działający system \textit{end-to-end}, który:
+\begin{itemize}
+  \item zbiera zachowania użytkownika w aplikacji webowej,
+  \item buduje cechy behawioralne z krótkich okien czasowych,
+  \item klasyfikuje sesje \texttt{human} vs \texttt{bot},
+  \item generuje decyzję enforcement na podstawie \texttt{risk\_score},
+  \item umożliwia trenowanie i ewaluację modelu na danych lokalnych.
+\end{itemize}
+
+\subsection{Wnioski praktyczne}
+\begin{itemize}
+  \item Podejście behawioralne daje dobrą wykrywalność nawet przy botach imitujących człowieka.
+  \item Interpretowalne drzewo decyzyjne ułatwia prezentację i audyt decyzji modelu.
+  \item Największy wpływ nadal mają cechy dynamiki ruchu (zwłaszcza \texttt{acc\_max}),
+  więc doskonalenie botów powinno iść w stronę realistycznego modelowania nagłych zmian tempa.
+\end{itemize}
+
+\subsection{Rekomendowane kolejne kroki}
+\begin{enumerate}
+  \item Rozszerzyć zbiór o nowe rodziny botów i sesje \textit{unseen}.
+  \item Dodać walidację czasową (time-based split) oraz monitoring driftu cech.
+  \item Uzupełnić policy engine o reputację źródeł i denylistę.
+  \item Rozważyć model sekwencyjny (np. Transformer/RNN) jako warstwę drugą.
+  \item Dodać dashboard operacyjny do przeglądu sesji i interpretacji predykcji.
+\end{enumerate}

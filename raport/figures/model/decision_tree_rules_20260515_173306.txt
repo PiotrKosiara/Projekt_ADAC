@@ -1,0 +1,22 @@
+|--- acc_max <= 21440.2998
+|   |--- scroll_count <= 13.0000
+|   |   |--- speed_std <= 19.9304
+|   |   |   |--- weights: [0.0000, 4.5766] class: 1
+|   |   |--- speed_std >  19.9304
+|   |   |   |--- weights: [0.0000, 231.1171] class: 1
+|   |--- scroll_count >  13.0000
+|   |   |--- weights: [3.1990, 0.0000] class: 0
+|--- acc_max >  21440.2998
+|   |--- path_length <= 2905.7310
+|   |   |--- acc_std <= 6430.7249
+|   |   |   |--- weights: [1.2796, 0.0000] class: 0
+|   |   |--- acc_std >  6430.7249
+|   |   |   |--- weights: [246.9622, 0.0000] class: 0
+|   |--- path_length >  2905.7310
+|   |   |--- curvature_mean <= 0.0565
+|   |   |   |--- jerk_max <= 6469104.5000
+|   |   |   |   |--- weights: [0.0000, 4.5766] class: 1
+|   |   |   |--- jerk_max >  6469104.5000
+|   |   |   |   |--- weights: [0.0000, 13.7297] class: 1
+|   |   |--- curvature_mean >  0.0565
+|   |   |   |--- weights: [2.5592, 0.0000] class: 0

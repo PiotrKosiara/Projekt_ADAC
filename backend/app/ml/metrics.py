@@ -6,6 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from sklearn.tree import plot_tree
 from sklearn.metrics import (
     auc,
     confusion_matrix,
@@ -81,3 +82,50 @@ def save_roc_plot(y_true, y_prob, output_path: str) -> None:
 def save_report(report: dict, output_path: str) -> None:
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     Path(output_path).write_text(json.dumps(report, indent=2), encoding="utf-8")
+
+
+def save_decision_tree_plot(
+    decision_tree_model,
+    feature_names: list[str],
+    output_path: str,
+    max_depth: int = 4,
+) -> None:
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    figure, ax = plt.subplots(figsize=(30, 14))
+    plot_tree(
+        decision_tree_model,
+        feature_names=feature_names,
+        class_names=["human", "bot"],
+        filled=True,
+        rounded=True,
+        max_depth=max_depth,
+        fontsize=8,
+        ax=ax,
+    )
+    ax.set_title(f"Decision Tree (visualized depth={max_depth})")
+    figure.tight_layout()
+    figure.savefig(output_path, dpi=180)
+    plt.close(figure)
+
+
+def save_feature_importance_plot(
+    feature_importances: np.ndarray,
+    feature_names: list[str],
+    output_path: str,
+    top_n: int = 15,
+) -> None:
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    importances = np.asarray(feature_importances, dtype=float)
+    indices = np.argsort(importances)[::-1][:top_n]
+
+    labels = [feature_names[idx] for idx in indices]
+    values = importances[indices]
+
+    figure, ax = plt.subplots(figsize=(11, 6))
+    sns.barplot(x=values, y=labels, orient="h", ax=ax, color="#2E86AB")
+    ax.set_title(f"Top {top_n} Feature Importance")
+    ax.set_xlabel("Importance")
+    ax.set_ylabel("Feature")
+    figure.tight_layout()
+    figure.savefig(output_path, dpi=180)
+    plt.close(figure)

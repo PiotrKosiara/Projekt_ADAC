@@ -1,0 +1,44 @@
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  actor/.style={draw, circle, minimum size=0.7cm, fill=gray!10},
+  uc/.style={
+    ellipse,
+    draw=black,
+    thick,
+    align=center,
+    minimum height=1.2cm,
+    fill=blue!6,
+    text width=6.4cm
+  },
+  line/.style={-Latex, thick}
+]
+
+\node[actor] (human) at (0.0,7.4) {};
+\node[align=center] at (0.0,6.6) {Człowiek};
+
+\node[actor] (bot) at (0.0,4.2) {};
+\node[align=center] at (0.0,3.4) {Bot runner};
+
+\node[actor] (operator) at (0.0,0.9) {};
+\node[align=center] at (0.0,0.1) {Analityk};
+
+\node[uc] (u1) at (8.2,7.4) {Generowanie\\telemetrii sesji};
+\node[uc] (u2) at (8.2,5.8) {Wysłanie batcha eventów\\do Collector API};
+\node[uc] (u3) at (8.2,4.2) {Predykcja human vs bot\\+ risk score};
+\node[uc, text width=8.0cm] (u4) at (8.2,2.3) {Decyzja polityki\\allow/observe/throttle/challenge/block};
+\node[uc] (u5) at (8.2,0.5) {Etykietowanie sesji\\do treningu};
+
+\draw[line] (human) -- (u1);
+\draw[line] (human) -- (u2);
+\draw[line] (human) -- (u3);
+\draw[line] (bot) -- (u1);
+\draw[line] (bot) -- (u2);
+\draw[line] (bot) -- (u3);
+\draw[line] (operator) -- (u5);
+\draw[line] (operator) -- (u4);
+
+\draw[line, dashed] (u1.south) -- (u2.north);
+\draw[line, dashed] (u2.south) -- (u3.north);
+\draw[line, dashed] (u3.south) -- (u4.north);
+
+\end{tikzpicture}

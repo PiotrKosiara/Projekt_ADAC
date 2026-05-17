@@ -76,7 +76,7 @@ def main() -> None:
     parser.add_argument(
         "--scenario",
         required=True,
-        choices=["human_manual", "linear", "human_like", "replay"],
+        choices=["human_manual", "linear", "human_like", "adaptive", "replay"],
         help="Behavior scenario to execute",
     )
     parser.add_argument("--sessions", type=int, default=1)
@@ -105,6 +105,11 @@ def main() -> None:
         default=os.getenv("BOT_VIDEO_DIR", "/app/artifacts/videos"),
         help="Directory for Playwright video artifacts",
     )
+    parser.add_argument(
+        "--human-profile-url",
+        default=os.getenv("HUMAN_PROFILE_URL", "http://backend:8000/api/v1/sessions/human-behavior-profile"),
+        help="Backend endpoint with profile distilled from human sessions",
+    )
     args = parser.parse_args()
 
     with sync_playwright() as p:
@@ -128,6 +133,7 @@ def main() -> None:
                     target_url=args.target_url,
                     replay_file=args.replay_file,
                     manual_seconds=args.manual_seconds,
+                    human_profile_url=args.human_profile_url,
                 )
                 context.close()
                 if args.record_video and page.video:

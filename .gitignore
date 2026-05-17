@@ -9,3 +9,7 @@ backend/data/raw/*.jsonl
 frontend/node_modules/
 frontend/dist/
 bot_runner/.pytest_cache/
+prezentacja_II/.pptx_deps/
+prezentacja_II/preview_v2/
+prezentacja_II/tmp_*/
+prezentacja_II/*.zip

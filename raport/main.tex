@@ -1,0 +1,64 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric,shapes.misc}
+
+\geometry{margin=2.3cm}
+\setlist[itemize]{leftmargin=1.5em}
+\setlength{\parskip}{0.3em}
+\setlength{\parindent}{0pt}
+
+\lstdefinestyle{reportcode}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!5},
+  columns=fullflexible
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!50!black,
+  pdftitle={Raport MVP - Behawioralna biometria ruchu myszy},
+  pdfauthor={Piotr Kosiara, Emilia Anczarska}
+}
+
+\title{
+  \textbf{Raport Techniczny MVP}\\
+  \large Bot czy człowiek? Behawioralna biometria ruchu myszy\\
+  dla ochrony aplikacji webowej
+}
+\author{Piotr Kosiara \\ Emilia Anczarska}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\input{sections/01_wprowadzenie}
+\input{sections/02_architektura}
+\input{sections/03_dokumentacja_techniczna}
+\input{sections/04_model_i_raport}
+\input{sections/05_podsumowanie}
+
+\end{document}

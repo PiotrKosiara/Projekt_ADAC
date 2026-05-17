@@ -22,7 +22,7 @@ MVP demonstruje pełny pipeline ochrony aplikacji webowej:
 - `frontend`: testbed UI + telemetry collector i batch upload.
 - `backend/app/api`: endpointy REST do sesji, eventów, predykcji.
 - `backend/app/services/feature_engineering.py`: cechy behawioralne z okien czasowych.
-- `backend/app/ml/train.py`: trening 2 modeli (baseline + mocniejszy) i wybór najlepszego.
+- `backend/app/ml/train.py`: trening modelu `DecisionTreeClassifier` i eksport artefaktów explainable.
 - `backend/app/ml/evaluate.py`: raport metryk + detection delay + unseen bots recall.
 - `backend/app/services/policy_engine.py`: mapowanie risk score -> akcja enforcement.
 - `bot_runner`: scenariusze botów i replay.
@@ -76,6 +76,20 @@ docker compose exec backend python -m app.scripts.seed_demo_data --samples-per-c
 ```bash
 docker compose exec backend python -m app.ml.train --window-size 120 --stride 80
 ```
+
+Uwaga: domyślnie drzewo jest trenowane na cechach behawioralnych (bez cech środowiskowych),
+żeby ograniczyć data leakage (np. split tylko po `viewport_area`).
+Jeśli chcesz świadomie dopuścić te cechy środowiskowe:
+
+```bash
+docker compose exec backend python -m app.ml.train --window-size 120 --stride 80 --include-env-in-tree
+```
+
+Po treningu powstaną artefakty explainable w `backend/models_artifacts/reports`:
+- `decision_tree_<timestamp>.png`
+- `decision_tree_rules_<timestamp>.txt`
+- `decision_tree_feature_importance_<timestamp>.png`
+- `model_comparison_<timestamp>.json`
 
 6. Ewaluacja modelu:
 

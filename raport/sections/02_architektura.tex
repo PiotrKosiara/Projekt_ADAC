@@ -1,0 +1,41 @@
+\section{Architektura systemu}
+
+\subsection{Widok komponentów}
+System składa się z czterech głównych części uruchamianych przez Docker Compose:
+\begin{itemize}
+  \item \textbf{Frontend} (Vite + React + TypeScript) -- zbiera telemetrię użytkownika.
+  \item \textbf{Backend} (FastAPI) -- kolekcja eventów, predykcja, etykietowanie, API.
+  \item \textbf{PostgreSQL} -- trwałe składowanie sesji, eventów, predykcji i akcji.
+  \item \textbf{Bot Runner} (Playwright) -- generowanie powtarzalnych scenariuszy botowych.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \resizebox{0.98\textwidth}{!}{\input{figures/diagrams/architecture_diagram}}
+  \caption{Architektura logiczna MVP}
+\end{figure}
+
+\subsection{Przepływ danych end-to-end}
+\begin{enumerate}
+  \item Frontend inicjuje sesję przez \texttt{POST /api/v1/sessions}.
+  \item Kolektor telemetrii zbiera eventy i wysyła je batchami do \texttt{/api/v1/events/batch}.
+  \item Backend zapisuje surowe dane do tabel \texttt{sessions} i \texttt{raw\_events}.
+  \item Dla żądania predykcji backend buduje cechy z okna eventów.
+  \item Model zwraca \texttt{predicted\_label}, prawdopodobieństwo bota i \texttt{risk\_score}.
+  \item Policy engine mapuje \texttt{risk\_score} na akcję enforcement.
+  \item Wynik i akcja są zapisywane (\texttt{predictions}, \texttt{enforcement\_actions}).
+\end{enumerate}
+
+\subsection{Diagram przypadków użycia}
+\begin{figure}[H]
+  \centering
+  \resizebox{0.95\textwidth}{!}{\input{figures/diagrams/use_case_diagram}}
+  \caption{Główne przypadki użycia systemu}
+\end{figure}
+
+\subsection{Model danych (ERD)}
+\begin{figure}[H]
+  \centering
+  \resizebox{0.98\textwidth}{!}{\input{figures/diagrams/erd_diagram}}
+  \caption{Relacyjny model danych PostgreSQL}
+\end{figure}

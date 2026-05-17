@@ -37,8 +37,9 @@ def evaluate() -> None:
 
         bundle = model_manager._load_bundle()
         model = bundle["model"]
+        feature_columns = bundle.get("feature_columns", FEATURE_COLUMNS)
 
-        X = frame[FEATURE_COLUMNS].astype(float).to_numpy()
+        X = frame[feature_columns].astype(float).to_numpy()
         y_true = frame["label"].astype(int).to_numpy()
         y_prob = model.predict_proba(X)[:, 1]
         y_pred = (y_prob >= 0.5).astype(int)
@@ -47,11 +48,17 @@ def evaluate() -> None:
         detection_delay = _compute_detection_delay(
             db,
             model,
+            feature_columns=feature_columns,
             window_size=args.window_size,
             stride=max(5, args.stride // 2),
             risk_threshold=args.risk_threshold,
         )
-        unseen_bot_recall = _compute_unseen_bot_recall(db, model, window_size=args.window_size)
+        unseen_bot_recall = _compute_unseen_bot_recall(
+            db,
+            model,
+            feature_columns=feature_columns,
+            window_size=args.window_size,
+        )
 
         report = {
             "metrics": metrics,
@@ -73,7 +80,14 @@ def evaluate() -> None:
         db.close()
 
 
-def _compute_detection_delay(db, model, window_size: int, stride: int, risk_threshold: float) -> dict:
+def _compute_detection_delay(
+    db,
+    model,
+    feature_columns: list[str],
+    window_size: int,
+    stride: int,
+    risk_threshold: float,
+) -> dict:
     bot_sessions_stmt = select(SessionRecord).where(SessionRecord.true_label == "bot")
     bot_sessions = list(db.execute(bot_sessions_stmt).scalars().all())
 
@@ -95,7 +109,7 @@ def _compute_detection_delay(db, model, window_size: int, stride: int, risk_thre
         for end_idx in range(window_size, len(events) + 1, stride):
             window = events[max(0, end_idx - window_size) : end_idx]
             features = build_feature_vector(window, merged_env)
-            X = np.array([[features.get(col, 0.0) for col in FEATURE_COLUMNS]], dtype=float)
+            X = np.array([[features.get(col, 0.0) for col in feature_columns]], dtype=float)
             probability_bot = float(model.predict_proba(X)[0][1])
             if probability_bot * 100.0 >= risk_threshold:
                 detected_at = end_idx
@@ -113,7 +127,7 @@ def _compute_detection_delay(db, model, window_size: int, stride: int, risk_thre
     }
 
 
-def _compute_unseen_bot_recall(db, model, window_size: int) -> dict:
+def _compute_unseen_bot_recall(db, model, feature_columns: list[str], window_size: int) -> dict:
     metadata = model_manager._load_metadata()
     seen_sources = set(metadata.get("seen_bot_sources", []))
 
@@ -140,7 +154,7 @@ def _compute_unseen_bot_recall(db, model, window_size: int) -> dict:
         merged_env = {**(session.client_fingerprint or {}), **(session.environment or {})}
         window = events[-window_size:]
         features = build_feature_vector(window, merged_env)
-        X = np.array([[features.get(col, 0.0) for col in FEATURE_COLUMNS]], dtype=float)
+        X = np.array([[features.get(col, 0.0) for col in feature_columns]], dtype=float)
         prob_bot = float(model.predict_proba(X)[0][1])
         prediction = 1 if prob_bot >= 0.5 else 0
 

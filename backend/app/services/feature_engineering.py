@@ -54,6 +54,20 @@ FEATURE_COLUMNS = [
     "device_memory",
 ]
 
+ENVIRONMENT_FEATURE_COLUMNS = [
+    "webdriver_flag",
+    "headless_flag",
+    "viewport_area",
+    "screen_area",
+    "viewport_screen_ratio",
+    "hardware_concurrency",
+    "device_memory",
+]
+
+BEHAVIORAL_FEATURE_COLUMNS = [
+    column for column in FEATURE_COLUMNS if column not in ENVIRONMENT_FEATURE_COLUMNS
+]
+
 
 @dataclass
 class SimpleEvent:

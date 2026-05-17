@@ -1,0 +1,41 @@
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  comp/.style={
+    rectangle,
+    rounded corners,
+    draw=black,
+    very thick,
+    align=center,
+    text width=3.6cm,
+    minimum height=1.3cm,
+    fill=blue!6
+  },
+  store/.style={
+    cylinder,
+    shape border rotate=90,
+    draw=black,
+    very thick,
+    align=center,
+    text width=4.6cm,
+    minimum height=1.8cm,
+    aspect=0.27,
+    fill=green!8
+  },
+  link/.style={-Latex, thick}
+]
+
+\node[comp, fill=orange!14] (user) at (0.0, 0.0) {Użytkownik\\(przeglądarka)};
+\node[comp] (frontend) at (5.1, 0.0) {Frontend\\Vite + React};
+\node[comp] (backend) at (10.6, 0.0) {Backend API\\FastAPI};
+\node[store] (db) at (10.6, -3.1) {PostgreSQL\\sessions, events, predictions};
+\node[comp, fill=purple!8] (bot) at (5.1, -2.4) {Bot Runner\\Playwright};
+\node[comp, fill=teal!8] (ml) at (10.6, 3.2) {Feature Builder +\\Decision Tree + Policy};
+
+\draw[link] (user) -- node[midway, above, fill=white, inner sep=1pt]{interakcje UI} (frontend);
+\draw[link] (frontend) -- node[midway, above, fill=white, inner sep=1pt]{batch telemetry} (backend);
+\draw[link] (backend) -- node[midway, right, fill=white, inner sep=1pt]{zapis/odczyt} (db);
+\draw[link] (backend) -- node[midway, right, fill=white, inner sep=1pt]{okno cech i predykcja} (ml);
+\draw[link, dashed] (bot) -- node[midway, left, fill=white, inner sep=1pt]{scenariusze botowe} (frontend);
+\draw[link, dashed] (bot.east) to[bend left=14] node[midway, above, fill=white, inner sep=1pt]{etykietowanie botów} (backend.south west);
+
+\end{tikzpicture}

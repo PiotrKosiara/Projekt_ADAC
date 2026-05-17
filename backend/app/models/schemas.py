@@ -85,6 +85,24 @@ class SessionStatusResponse(BaseModel):
     created_at: datetime
 
 
+class HumanBehaviorProfileResponse(BaseModel):
+    human_sessions: int
+    human_events: int
+    move_step_mean_px: float
+    move_step_std_px: float
+    move_dt_mean_ms: float
+    move_dt_p90_ms: float
+    speed_mean_px_s: float
+    speed_p90_px_s: float
+    click_interval_mean_ms: float
+    click_interval_p90_ms: float
+    scroll_delta_mean: float
+    scroll_delta_p90: float
+    pause_prob: float
+    pause_mean_ms: float
+    pause_p90_ms: float
+
+
 class PredictionResponse(BaseModel):
     session_id: str
     predicted_label: Literal["human", "bot"]

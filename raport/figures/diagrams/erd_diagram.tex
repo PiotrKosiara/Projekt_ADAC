@@ -1,0 +1,73 @@
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  tbl/.style={
+    rectangle,
+    draw=black,
+    thick,
+    align=left,
+    font=\footnotesize,
+    fill=green!6,
+    text width=4.9cm,
+    inner sep=5pt
+  },
+  rel/.style={-Latex, thick}
+]
+
+\node[tbl] (sessions) at (0.0, 4.8) {
+\textbf{sessions}\\
+PK: id\\
+client\_fingerprint (JSON)\\
+environment (JSON)\\
+source, true\_label\\
+started\_at\\
+last\_event\_at
+};
+
+\node[tbl] (events) at (0.0, 1.0) {
+\textbf{raw\_events}\\
+PK: id\\
+FK: session\_id $\rightarrow$ sessions.id\\
+sequence\_no\\
+event\_type, ts\_ms\\
+x, y, scroll\_x, scroll\_y\\
+target\_id, pointer\_type\\
+payload
+};
+
+\node[tbl] (pred) at (7.0, 4.8) {
+\textbf{predictions}\\
+PK: id\\
+FK: session\_id $\rightarrow$ sessions.id\\
+FK: model\_version\_id $\rightarrow$ model\_versions.id\\
+predicted\_label\\
+probability\_bot\\
+risk\_score, confidence\\
+created\_at
+};
+
+\node[tbl] (modelv) at (7.0, 1.0) {
+\textbf{model\_versions}\\
+PK: id\\
+name, version, algorithm\\
+metrics (JSON)\\
+artifact\_path\\
+metadata (JSON)\\
+created\_at
+};
+
+\node[tbl] (enf) at (7.0, -2.7) {
+\textbf{enforcement\_actions}\\
+PK: id\\
+FK: session\_id $\rightarrow$ sessions.id\\
+FK: prediction\_id $\rightarrow$ predictions.id\\
+action, reason\\
+created\_at
+};
+
+\draw[rel] (events.north) -- node[midway, left, fill=white, inner sep=1pt]{N:1} (sessions.south);
+\draw[rel] (pred.west) -- node[midway, above, fill=white, inner sep=1pt]{N:1} (sessions.east);
+\draw[rel] (pred.south) -- node[midway, right, fill=white, inner sep=1pt]{N:1} (modelv.north);
+\draw[rel] (enf.north) -- node[midway, right, fill=white, inner sep=1pt]{N:1} (pred.south);
+\draw[rel] (enf.west) to[bend right=24] node[pos=0.42, left, fill=white, inner sep=1pt]{N:1} (sessions.south east);
+
+\end{tikzpicture}
