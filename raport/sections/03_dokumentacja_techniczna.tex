@@ -120,6 +120,66 @@ Lacznie: 101 sesji botowych.
   zblizone dystrybucyjnie do klasy \texttt{human}.
 \end{itemize}
 
+\subsubsection{Scenariusze eksperymentalne}
+W środowisku testowym przygotowano pięć scenariuszy eksperymentalnych:
+\begin{enumerate}
+  \item \textbf{Human baseline}: realny użytkownik ręcznie korzysta z frontendu,
+  wykonując ruchy kursorem, kliknięcia, scrollowanie i wpisywanie fraz.
+  \item \textbf{Bot linear}: automatyzacja przechodzi pomiędzy punktami po prostych
+  trajektoriach i z relatywnie regularnym tempem.
+  \item \textbf{Bot human-like}: automatyzacja dodaje losowe opóźnienia, jitter oraz
+  krzywe Béziera, aby częściowo imitować naturalne przejścia kursora.
+  \item \textbf{Bot adaptive}: automatyzacja korzysta z profilu zachowań człowieka
+  pobieranego z backendu i próbuje dopasować rozkłady tempa, pauz i korekt ruchu.
+  \item \textbf{Bot replay}: odtworzenie wcześniej wyeksportowanej trajektorii sesji
+  z pliku JSON. Ten wariant służy głównie do testów powtarzalności.
+\end{enumerate}
+
+\subsection{Generacja i przygotowanie danych}
+\subsubsection{Opis zebranych danych}
+Końcowy zbiór na poziomie sesji obejmuje 202 oznaczone sesje:
+\begin{itemize}
+  \item 101 sesji klasy \texttt{human},
+  \item 101 sesji klasy \texttt{bot},
+  \item w klasie \texttt{bot}: 25 sesji \texttt{linear}, 26 sesji
+  \texttt{human\_like} oraz 50 sesji \texttt{adaptive}.
+\end{itemize}
+
+Po zastosowaniu okien \texttt{window\_size=120} i \texttt{stride=80}
+uzyskano 644 próbki okien zachowania wykorzystane w ewaluacji aktywnego modelu.
+Każda próbka reprezentuje fragment sesji, a nie pojedyncze zdarzenie.
+
+\subsubsection{Przygotowanie danych}
+Przed treningiem dane są przekształcane w następujący sposób:
+\begin{itemize}
+  \item eventy są sortowane po \texttt{ts\_ms},
+  \item okna zbyt krótkie są uzupełniane zerowymi wartościami cech, jeśli dana
+  cecha nie może zostać policzona,
+  \item różnice czasu są zabezpieczane przez \texttt{max(1, dt\_ms)}, aby uniknąć
+  dzielenia przez zero,
+  \item wszystkie cechy są rzutowane na wartości liczbowe typu \texttt{float},
+  \item cechy środowiskowe są liczone, ale w finalnym drzewie wyłączone z modelu.
+\end{itemize}
+
+Nie stosowano normalizacji typu \texttt{StandardScaler}, ponieważ finalny model
+to drzewo decyzyjne. Drzewa są niewrażliwe na monotoniczne skalowanie cech, więc
+skalowanie nie poprawiałoby interpretowalności progów decyzyjnych.
+
+\subsubsection{Analiza jakości danych}
+Najważniejsze obserwacje dotyczące jakości danych:
+\begin{itemize}
+  \item zbiór jest zbalansowany na poziomie sesji (\texttt{101 human} i
+  \texttt{101 bot}), co ogranicza problem dominacji jednej klasy,
+  \item dane botowe są kontrolowane i powtarzalne, dzięki czemu dobrze nadają się
+  do demonstracji pipeline'u,
+  \item dane human pochodzą z lokalnego testbedu i ograniczonej liczby operatorów,
+  co jest wystarczające dla MVP, ale ogranicza generalizację,
+  \item cechy środowiskowe mogłyby sztucznie ułatwiać klasyfikację, dlatego
+  zostały wyłączone z finalnego modelu,
+  \item dominacja cechy \texttt{acc\_max} wskazuje, że najtrudniejszym elementem
+  do realistycznego zasymulowania jest nagła, impulsowa dynamika ruchu człowieka.
+\end{itemize}
+
 \subsection{Backend Collector API (FastAPI)}
 \subsubsection{Warstwy backendu}
 \begin{itemize}

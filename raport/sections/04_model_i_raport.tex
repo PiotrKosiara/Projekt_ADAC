@@ -20,6 +20,22 @@ Finalna wersja modelu to drzewo decyzyjne trenowane na cechach behawioralnych:
   \item \texttt{feature\_set = behavioral} (bez cech srodowiskowych).
 \end{itemize}
 
+\subsection{Uzasadnienie wyboru modelu}
+W finalnej wersji projektu zastosowano \texttt{DecisionTreeClassifier}, ponieważ
+łączy trzy cechy ważne dla raportu końcowego:
+\begin{itemize}
+  \item \textbf{interpretowalność}: decyzje można przedstawić jako jawne reguły
+  i diagram drzewa,
+  \item \textbf{brak konieczności normalizacji}: model może pracować bezpośrednio
+  na cechach liczbowych o różnych skalach,
+  \item \textbf{czytelność demonstracyjna}: łatwo pokazać, które progi cech
+  prowadzą do klasyfikacji \texttt{human} albo \texttt{bot}.
+\end{itemize}
+
+W projekcie celowo skupiono się na jednym finalnym, audytowalnym modelu drzewa,
+zamiast utrzymywać kilka modeli równolegle. Jest to zgodne z charakterem MVP:
+priorytetem była możliwość zrozumienia decyzji modelu i pokazania jej na diagramie.
+
 \subsection{Jakie dane weszly do modelu}
 \subsubsection{Poziom surowy}
 Wejsciem sa sesje zapisane w PostgreSQL (\texttt{sessions}, \texttt{raw\_events}),
@@ -219,8 +235,24 @@ czyli w aktualnym zestawie nie ma osobnej, niewidzianej rodziny botow do twardeg
 Dlatego aktualny raport dobrze opisuje zachowanie modelu \emph{w ramach obecnej dystrybucji},
 ale nie zamyka tematu odpornosci na nowe klasy botow.
 
-\subsection{Threats to validity}
-Ponizej wskazano glowne ryzyka interpretacyjne wynikow:
+\subsection{Wpływ jakości danych na wyniki}
+Jakość danych ma bezpośredni wpływ na interpretację metryk:
+\begin{itemize}
+  \item \textbf{Zbalansowane klasy}: równa liczba sesji \texttt{human} i
+  \texttt{bot} ogranicza ryzyko modelu trywialnie preferującego klasę większościową.
+  \item \textbf{Dane syntetyczne botów}: boty są kontrolowane, co ułatwia
+  demonstrację, ale może zawyżać wynik względem realnych botów produkcyjnych.
+  \item \textbf{Dane human z testbedu}: sesje człowieka są realistyczne w ramach
+  lokalnego UI, ale nie obejmują szerokiej populacji urządzeń i użytkowników.
+  \item \textbf{Dominacja \texttt{acc\_max}}: wysoka ważność tej cechy oznacza,
+  że obecne boty nadal różnią się od człowieka przede wszystkim dynamiką nagłych
+  zrywów kursora. To informuje, gdzie należy rozwijać kolejne scenariusze botowe.
+  \item \textbf{Wyłączenie cech środowiskowych}: ogranicza leakage, ale jednocześnie
+  zmusza model do korzystania z sygnałów behawioralnych, co lepiej odpowiada celowi projektu.
+\end{itemize}
+
+\subsection{Ograniczenia trafności wyników}
+Poniżej wskazano główne ryzyka interpretacyjne wyników:
 \begin{itemize}
   \item \textbf{Internal validity}: mimo wykluczenia czesci cech srodowiskowych z podzialow drzewa,
   pozostaje ryzyko, ze model wykorzystuje sygnaly specyficzne dla aktualnego UI i sposobu testowania.

@@ -1,0 +1,58 @@
+\section{Materiały dodatkowe}
+
+\subsection{Repozytorium projektu}
+Kod źródłowy projektu jest dostępny w repozytorium:
+\begin{center}
+  \url{https://github.com/PiotrKosiara/Projekt_ADAC}
+\end{center}
+
+Repozytorium zawiera:
+\begin{itemize}
+  \item kod frontendu testbedowego,
+  \item backend FastAPI wraz z modelem danych i endpointami,
+  \item pipeline feature engineering i treningu modelu,
+  \item bot runner Playwright,
+  \item konfigurację Docker Compose,
+  \item raport LaTeX oraz materiały prezentacyjne.
+\end{itemize}
+
+\subsection{Struktura datasetu}
+Dane projektowe są przechowywane przede wszystkim w PostgreSQL. Logicznie dataset
+można podzielić na cztery warstwy:
+\begin{enumerate}
+  \item \textbf{Warstwa sesji}: tabela \texttt{sessions}, czyli identyfikator sesji,
+  etykieta referencyjna, źródło danych i fingerprint środowiska.
+  \item \textbf{Warstwa surowych eventów}: tabela \texttt{raw\_events}, czyli
+  chronologiczny zapis \texttt{mousemove}, \texttt{click}, \texttt{scroll},
+  \texttt{focus}, \texttt{blur} i zdarzeń viewportu.
+  \item \textbf{Warstwa cech}: okna zachowania generowane dynamicznie przez backend,
+  z cechami takimi jak \texttt{acc\_max}, \texttt{speed\_std},
+  \texttt{path\_length}, \texttt{event\_type\_entropy}.
+  \item \textbf{Warstwa wyników}: tabele \texttt{predictions},
+  \texttt{model\_versions} i \texttt{enforcement\_actions}.
+\end{enumerate}
+
+\subsection{Rozmiar i skład danych końcowych}
+Końcowy zestaw danych wykorzystany w raporcie:
+\begin{itemize}
+  \item 202 oznaczone sesje,
+  \item 101 sesji \texttt{human},
+  \item 101 sesji \texttt{bot},
+  \item 644 próbki okien zachowania w ewaluacji aktywnego modelu,
+  \item scenariusze botowe: \texttt{linear} -- 25 sesji,
+  \texttt{human\_like} -- 26 sesji, \texttt{adaptive} -- 50 sesji.
+\end{itemize}
+
+\subsection{Odtwarzalność eksperymentu}
+Podstawowy eksperyment można odtworzyć lokalnie przez:
+\begin{lstlisting}[style=reportcode]
+docker compose up -d --build
+docker compose exec bot_runner python main.py --scenario linear --sessions 25 --record-video
+docker compose exec bot_runner python main.py --scenario human_like --sessions 26 --record-video
+docker compose exec bot_runner python main.py --scenario adaptive --sessions 50 --record-video
+docker compose exec backend python -m app.ml.train --window-size 120 --stride 80 --tree-max-depth 12 --tree-min-samples-leaf 2
+\end{lstlisting}
+
+Dane \texttt{human} wymagają ręcznych interakcji z frontendem i etykietowania
+sesji jako \texttt{human}. Ten element jest celowo manualny, ponieważ stanowi
+referencyjne zachowanie człowieka dla scenariuszy botowych.
